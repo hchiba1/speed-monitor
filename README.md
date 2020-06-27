@@ -29,5 +29,5 @@ optional arguments:
 ./speedtest.py -n 3
 ```
 ```
-./speedtest -s 3600
+./speedtest.py -s 3600
 ```
