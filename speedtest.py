@@ -52,6 +52,9 @@ def repeat_speed_test():
                 return
         time.sleep(args.sec)
 
+print('{0:} {1:9} {2:14} {3:14} {4:9} {5:>9} {6:4} {7:9}  {8}'.format(
+    'Date       Time    ', '  Ping', '  Download', '  Upload', ' Download', '  Upload', ' Loss', '  Jitter', 'Server name'))
+
 try:
     repeat_speed_test()
 except KeyboardInterrupt:
