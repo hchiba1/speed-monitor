@@ -1,5 +1,9 @@
 # Speed monitor
 A wrapper script of **Speedtest CLI** by Ookla (https://www.speedtest.net/apps/cli).
+
+Repeat the speedtest with a specified interval.
+
+## Prerequisite
 Download the Speedtest CLI and uncompress it.
 The `speedtest` command should be instaled in the command path.
 
