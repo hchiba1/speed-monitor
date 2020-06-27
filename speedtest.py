@@ -4,14 +4,15 @@ import time
 import argparse
 import subprocess
 
-parser = argparse.ArgumentParser(description='Speed test.')
-parser.add_argument('-n', '--num', default=0, type=int, help='Nuber of times')
-parser.add_argument('-s', '--sec', default=0, type=int, help='Sleep between test')
+parser = argparse.ArgumentParser(description='Repeat the Speedtest by Ookla')
+parser.add_argument('-n', '--num', default=0, type=int, help='limits the number of mesurements')
+parser.add_argument('-s', '--sec', default=0, type=int, help='sleep between tests (in seconds)')
+parser.add_argument('--server', default='15047', help='server ID')
 args = parser.parse_args()
 
 command = [
     'speedtest',
-    '-s', '15047',
+    '-s', args.server,
     '-f', 'tsv',
     # '--output-header'
 ]
@@ -36,7 +37,7 @@ def print_speed():
     upload_mbps = int(upload) * 8 / 1000000
     download_mb = int(download_bytes) / 1024 / 1024
     upload_mb = int(upload_bytes) / 1024 / 1024
-    print(f'{date_time} {float(latency):>6.3f} ms {download_mbps:>7.2f} Mbit/s {upload_mbps:>7.2f} Mbit/s {download_mb:>5.1f} MB {upload_mb:>5.1f} MB  {server_name}')
+    print(f'{date_time} {float(latency):>6.2f} ms {download_mbps:>7.2f} Mbit/s {upload_mbps:>7.2f} Mbit/s {download_mb:>5.1f} MB {upload_mb:>5.1f} MB {float(packet_loss):>4.1f}% {float(jitter):>6.2f} ms  {server_name}')
 
 def repeat_speed_test():
     count = 0
