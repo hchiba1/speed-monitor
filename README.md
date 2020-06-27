@@ -5,6 +5,7 @@ Repeat the speedtest with a specified interval.
 
 ## Prerequisite
 Download the Speedtest CLI and uncompress it.
+
 The `speedtest` command should be instaled in the command path.
 
 ## Usage
@@ -20,7 +21,7 @@ optional arguments:
   --server SERVER    server ID
 ```
 
-## Example Usecase
+## Example usecase
 ```
 ./speedtest.py
 ```
