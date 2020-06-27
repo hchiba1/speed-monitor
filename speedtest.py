@@ -37,7 +37,10 @@ def print_speed():
     upload_mbps = int(upload) * 8 / 1000000
     download_mb = int(download_bytes) / 1024 / 1024
     upload_mb = int(upload_bytes) / 1024 / 1024
-    print(f'{date_time} {float(latency):>6.2f} ms {download_mbps:>7.2f} Mbit/s {upload_mbps:>7.2f} Mbit/s {download_mb:>5.1f} MB {upload_mb:>5.1f} MB {float(packet_loss):>4.1f}% {float(jitter):>6.2f} ms  {server_name}')
+    print(f'{date_time} {float(latency):>6.2f} ms',
+          f'{download_mbps:>7.2f} Mbit/s {upload_mbps:>7.2f} Mbit/s',
+          f'{download_mb:>6.1f} MB {upload_mb:>6.1f} MB',
+          f'{float(packet_loss):>4.1f}% {float(jitter):>6.2f} ms  {server_name}')
 
 def repeat_speed_test():
     count = 0
