@@ -28,6 +28,7 @@ optional arguments:
 ## Example usecase
 ### Use in default settings
 Default interval is 3600 sec (1 hour)
+
 Default server is OPEN Project (via 20G SINET) (Tokyo, Japan) (ID:15047)
 ```
 ./speed-monitor.py
