@@ -8,7 +8,7 @@ import requests
 
 parser = argparse.ArgumentParser(description='Repeat the Speedtest by Ookla')
 parser.add_argument('-n', '--num', default=0, type=int, help='limits the number of mesurements')
-parser.add_argument('-s', '--sec', default=0, type=int, help='sleep between tests (in seconds)')
+parser.add_argument('-s', '--sec', default=3600, type=int, help='sleep between tests (in seconds)')
 parser.add_argument('-H', '--header', action='store_true', help='output header line')
 parser.add_argument('--server', default='15047', help='server ID')
 parser.add_argument('--ambient', help='channel and key for Ambient service')
