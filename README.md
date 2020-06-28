@@ -22,11 +22,11 @@ optional arguments:
 ```
 
 ## Example usecase
-### Use default interval of 1 hour, output with header
+### Default interval of 1 hour, output with header
 ```
 ./speed-monitor.py -H
 ```
-### Measure 5 times with no interval
+### 5 times with no interval
 ```
 ./speed-monitor.py -n 5 -s 0 -H
 ```
