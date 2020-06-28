@@ -26,7 +26,7 @@ optional arguments:
 ```
 ./speed-monitor.py
 ```
-### 5 times with no interval, output with header
+### 3 times with no interval, output with header
 ```
 ./speed-monitor.py -n 3 -s 0 -H
 ```
