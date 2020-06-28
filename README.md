@@ -10,7 +10,7 @@ The `speedtest` command should be instaled in the command path.
 
 ## Usage
 ```
-usage: speedtest.py [-h] [-n NUM] [-s SEC] [--server SERVER]
+usage: speed-monitor.py [-h] [-n NUM] [-s SEC] [--server SERVER]
 
 Repeat the Speedtest by Ookla
 
@@ -23,11 +23,11 @@ optional arguments:
 
 ## Example usecase
 ```
-./speedtest.py
+./speed-monitor.py
 ```
 ```
-./speedtest.py -n 3
+./speed-monitor.py -n 3
 ```
 ```
-./speedtest.py -s 3600
+./speed-monitor.py -s 3600
 ```
