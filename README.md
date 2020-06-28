@@ -10,7 +10,8 @@ The `speedtest` command should be instaled in the command path.
 
 ## Usage
 ```
-usage: speed-monitor.py [-h] [-n NUM] [-s SEC] [--server SERVER]
+usage: speed-monitor.py [-h] [-n NUM] [-s SEC] [-H] [-l] [--server SERVER]
+                        [--ambient AMBIENT]
 
 Repeat the Speedtest by Ookla
 
@@ -18,7 +19,10 @@ optional arguments:
   -h, --help         show this help message and exit
   -n NUM, --num NUM  limits the number of mesurements
   -s SEC, --sec SEC  sleep between tests (in seconds)
+  -H, --header       output header line
+  -l, --list         list servers
   --server SERVER    server ID
+  --ambient AMBIENT  channel and key for Ambient
 ```
 
 ## Example usecase
