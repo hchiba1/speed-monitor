@@ -26,6 +26,9 @@ date_command = ['date', '+%F %T']
 
 if args.list:
     res = requests.get('http://c.speedtest.net/speedtest-servers-static.php')
+    # res = requests.get('http://c.speedtest.net/speedtest-servers.php')
+    # res = requests.get('http://www.speedtest.net/speedtest-servers-static.php')
+    # res = requests.get('http://www.speedtest.net/speedtest-servers.php')
     if res.status_code == requests.codes.ok:
         settings = ET.fromstring(res.text)
         for servers in settings:
