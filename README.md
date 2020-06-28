@@ -26,11 +26,17 @@ optional arguments:
 ```
 
 ## Example usecase
-### Default interval of 1 hour
+### Use in default settings
+Default interval is 3600 sec (1 hour)
+Default server is OPEN Project (via 20G SINET) (Tokyo, Japan) (ID:15047)
 ```
 ./speed-monitor.py
 ```
 ### 3 times with no interval, output with header
 ```
 ./speed-monitor.py -n 3 -s 0 -H
+```
+### List servers
+```
+./speed-monitor.py -l
 ```
