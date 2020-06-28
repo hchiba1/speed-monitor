@@ -28,5 +28,5 @@ optional arguments:
 ```
 ### 5 times with no interval
 ```
-./speed-monitor.py -n 5 -s 0 -H
+./speed-monitor.py -n 5 -s 0
 ```
