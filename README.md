@@ -25,7 +25,7 @@ optional arguments:
   --ambient AMBIENT  channel and key for Ambient
 ```
 
-## Example usecase
+## Usecases
 ### Use in default settings
 Default interval is 3600 sec (1 hour)
 
