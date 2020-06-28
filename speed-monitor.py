@@ -53,13 +53,13 @@ def print_speed():
     print(f'{date_time} {ping:>6} ms',
           f'{download_mbps:>7.2f} Mbit/s {upload_mbps:>7.2f} Mbit/s',
           f'{download_mb:>6.1f} MB {upload_mb:>6.1f} MB',
-          f'{float(packet_loss):>4.1f}% {float(jitter):>6.2f} ms  {server_name}')
+          f'{float(packet_loss):>4.1f}% {float(jitter):>6.2f} ms  {server_name}', flush=True)
 
     if args.ambient:
         data = [{'created': date_time, 'd1': download_mbps, 'd2': upload_mbps, 'd3': ping}]
         res = requests.post(f'http://ambidata.io/api/v2/channels/{channel}/dataarray', json={'writeKey': key, 'data': data})
         if res.status_code != requests.codes.ok:
-            print('ERROR:', res.status_code, file=sys.stderr)
+            print('ERROR:', res.status_code, file=sys.stderr, flush=True)
 
 def repeat_speed_test():
     count = 0
@@ -73,7 +73,7 @@ def repeat_speed_test():
 
 if args.header:
     print('{0:} {1:9} {2:14} {3:14} {4:9} {5:9} {6:4} {7:9}  {8}'.format(
-        'Date       Time    ', '  Ping', '  Download', '  Upload', ' Download', '  Upload', ' Loss', '  Jitter', 'Server name'))
+        'Date       Time    ', '  Ping', '  Download', '  Upload', ' Download', '  Upload', ' Loss', '  Jitter', 'Server name'), flush=True)
 
 try:
     repeat_speed_test()
