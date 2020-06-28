@@ -22,11 +22,11 @@ optional arguments:
 ```
 
 ## Example usecase
-### Default interval of 1 hour, output with header
+### Default interval of 1 hour
 ```
-./speed-monitor.py -H
+./speed-monitor.py
 ```
-### 5 times with no interval
+### 5 times with no interval, output with header
 ```
-./speed-monitor.py -n 5 -s 0
+./speed-monitor.py -n 5 -s 0 -H
 ```
