@@ -5,11 +5,13 @@ import time
 import argparse
 import subprocess
 import requests
+import xml.etree.ElementTree as ET
 
 parser = argparse.ArgumentParser(description='Repeat the Speedtest by Ookla')
 parser.add_argument('-n', '--num', default=0, type=int, help='limits the number of mesurements')
 parser.add_argument('-s', '--sec', default=3600, type=int, help='sleep between tests (in seconds)')
 parser.add_argument('-H', '--header', action='store_true', help='output header line')
+parser.add_argument('-l', '--list', action='store_true', help='list servers')
 parser.add_argument('--server', default='15047', help='server ID')
 parser.add_argument('--ambient', help='channel and key for Ambient')
 args = parser.parse_args()
@@ -17,11 +19,19 @@ args = parser.parse_args()
 command = [
     'speedtest',
     '-s', args.server,
-    '-f', 'tsv',
-    # '--output-header'
+    '-f', 'tsv'
 ]
 
 date_command = ['date', '+%F %T']
+
+if args.list:
+    res = requests.get('http://c.speedtest.net/speedtest-servers-static.php')
+    if res.status_code == requests.codes.ok:
+        settings = ET.fromstring(res.text)
+        for servers in settings:
+            for server in servers:
+                print(f'{server.attrib["id"]}\t{server.attrib["sponsor"]}\t@{server.attrib["name"]} ({server.attrib["country"]})\t({server.attrib["lat"]},{server.attrib["lon"]})')
+    sys.exit()
 
 channel, key = '', ''
 if args.ambient:
@@ -33,6 +43,8 @@ if args.ambient:
 
 def print_speed():
     ret = subprocess.run(command, stdout=subprocess.PIPE)
+    if ret.returncode != 0:
+        sys.exit(ret.returncode)
     line = ret.stdout.decode()
     line = line.rstrip('\n')
 
@@ -50,10 +62,14 @@ def print_speed():
     upload_mbps = int(upload) * 8 / 1000000
     download_mb = int(download_bytes) / 1000000
     upload_mb = int(upload_bytes) / 1000000
+    if packet_loss == 'N/A':
+        packet_loss = f'{packet_loss:>5}'
+    else:
+        packet_loss = f'{float(packet_loss):>4.1f}%'
     print(f'{date_time} {ping:>6} ms',
           f'{download_mbps:>7.2f} Mbit/s {upload_mbps:>7.2f} Mbit/s',
           f'{download_mb:>6.1f} MB {upload_mb:>6.1f} MB',
-          f'{float(packet_loss):>4.1f}% {float(jitter):>6.2f} ms  {server_name}', flush=True)
+          f'{packet_loss} {float(jitter):>6.2f} ms  {server_name}', flush=True)
 
     if args.ambient:
         data = [{'created': date_time, 'd1': download_mbps, 'd2': upload_mbps, 'd3': ping}]
