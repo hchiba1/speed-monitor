@@ -33,7 +33,7 @@ if args.list:
         settings = ET.fromstring(res.text)
         for servers in settings:
             for server in servers:
-                print(f'{server.attrib["id"]}\t{server.attrib["sponsor"]}\t@{server.attrib["name"]} ({server.attrib["country"]})\t({server.attrib["lat"]},{server.attrib["lon"]})')
+                print(f'{server.attrib["id"]:>5} ({server.attrib["lat"]},{server.attrib["lon"]}) {server.attrib["name"]} ({server.attrib["country"]}) {server.attrib["sponsor"]}')
     sys.exit()
 
 channel, key = '', ''
