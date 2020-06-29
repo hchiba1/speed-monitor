@@ -24,7 +24,7 @@ command = [
 
 date_command = ['date', '+%F %T']
 
-if args.list:
+def print_servers():
     res = requests.get('http://c.speedtest.net/speedtest-servers-static.php')
     # res = requests.get('http://c.speedtest.net/speedtest-servers.php')
     # res = requests.get('http://www.speedtest.net/speedtest-servers-static.php')
@@ -34,6 +34,12 @@ if args.list:
         for servers in settings:
             for server in servers:
                 print(f'{server.attrib["id"]:>5} ({server.attrib["lat"]},{server.attrib["lon"]}) {server.attrib["name"]} ({server.attrib["country"]}) {server.attrib["sponsor"]}')
+
+if args.list:
+    try:
+        print_servers()
+    except BrokenPipeError:
+        pass
     sys.exit()
 
 channel, key = '', ''
