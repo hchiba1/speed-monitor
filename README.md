@@ -10,19 +10,20 @@ The `speedtest` command should be instaled in the command path.
 
 ## Usage
 ```
-usage: speed-monitor.py [-h] [-n NUM] [-s SEC] [-H] [-l] [--server SERVER]
-                        [--ambient AMBIENT]
+usage: speed-monitor.py [-h] [-H] [-n NUM] [-t SEC] [-s SERVER]
+                        [--ambient AMBIENT] [-l]
 
 Repeat the Speedtest by Ookla
 
 optional arguments:
-  -h, --help         show this help message and exit
-  -n NUM, --num NUM  limits the number of mesurements
-  -s SEC, --sec SEC  sleep between tests (in seconds)
-  -H, --header       output header line
-  -l, --list         list servers
-  --server SERVER    server ID
-  --ambient AMBIENT  channel and key for Ambient
+  -h, --help            show this help message and exit
+  -H, --header          output header line
+  -n NUM, --num NUM     limits the number of mesurements
+  -t SEC, --sec SEC     sleep between tests (in seconds)
+  -s SERVER, --server SERVER
+                        server ID
+  --ambient AMBIENT     channel and key for Ambient
+  -l, --list            list servers
 ```
 
 ## Usecases
@@ -35,7 +36,7 @@ Default server is OPEN Project (via 20G SINET) (Tokyo, Japan) (ID:15047)
 ```
 ### 3 times with no interval, output with header
 ```
-./speed-monitor.py -n 3 -s 0 -H
+./speed-monitor.py -n 3 --sec 0 --header
 ```
 ### List available servers
 ```
