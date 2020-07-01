@@ -26,6 +26,26 @@ command = [
 
 date_command = ['date', '+%F %T']
 
+channel, key = '', ''
+
+def main():
+    if args.ambient:
+        matched = re.search(r'^(\d+):([0-9a-z]+)$', args.ambient)
+        if not matched:
+            print('ERROR: invalid value in --ambient')
+            sys.exit(1)
+        channel, key = matched.groups()
+
+    if args.list:
+        print_servers()
+        return
+
+    if args.header:
+        print('{0:} {1:9} {2:14} {3:14} {4:9} {5:9} {6:4} {7:9} {8}'.format(
+            'Date       Time    ', '  Ping', '  Download', '  Upload', ' Download', '  Upload', ' Loss', '  Jitter', 'Server'), flush=True)
+
+    repeat_speed_test(args.server)
+
 def print_servers():
     res = requests.get('http://c.speedtest.net/speedtest-servers-static.php')
     # res = requests.get('http://c.speedtest.net/speedtest-servers.php')
@@ -35,34 +55,22 @@ def print_servers():
         settings = ET.fromstring(res.text)
         for servers in settings:
             for server in servers:
-                print(f'{server.attrib["id"]}\t({server.attrib["lat"]},{server.attrib["lon"]})\t{server.attrib["name"]} ({server.attrib["country"]}) {server.attrib["sponsor"]}')
+                print(f'{server.attrib["id"]:5}',
+                      f'({server.attrib["lat"]},{server.attrib["lon"]})',
+                      f'{server.attrib["country"]} ({server.attrib["name"]}) {server.attrib["sponsor"]}',
+                      sep=' ')
 
-if args.list:
-    try:
-        print_servers()
-    except BrokenPipeError:
-        pass
-    sys.exit()
-
-channel, key = '', ''
-if args.ambient:
-    matched = re.search(r'^(\d+):([0-9a-z]+)$', args.ambient)
-    if not matched:
-        print('ERROR: invalid valud in --ambient')
-        sys.exit(1)
-    channel, key = matched.groups()
-
-def print_speed():
+def print_speed(server):
     ret = subprocess.run(date_command, stdout=subprocess.PIPE)
     date_time = ret.stdout.decode().rstrip('\n')
 
     try:
         ret = subprocess.run(command, stdout=subprocess.PIPE)
         if ret.returncode != 0:
-            print(f'ERROR: server={args.server} code={ret.returncode}')
+            print(f'ERROR: speedtest server={server} retcode={ret.returncode}')
             sys.exit(ret.returncode)
     except Exception as e:
-        print(e)
+        print('Exception:', e)
         return
     # line = ret.stdout.decode()
     # line = line.rstrip('\n')
@@ -97,8 +105,11 @@ def print_speed():
     print(f'{date_time} {ping:>6} ms',
           f'{download_mbps:>7.2f} Mbit/s {upload_mbps:>7.2f} Mbit/s',
           f'{download_mb:>6.1f} MB {upload_mb:>6.1f} MB',
-          # f'{packet_loss} {float(jitter):>6.2f} ms  {server_name}', flush=True)
-          f'{packet_loss} {float(jitter):>6.2f} ms  {server_id:5} {server_location} ({server_country}) {server_name}', flush=True)
+          f'{packet_loss} {float(jitter):>6.2f} ms',
+          # f'{server_id:5} {server_location} ({server_country})',
+          f'{server_id:5} {server_country} ({server_location})',
+          f'{server_name}',
+          flush=True)
 
     if args.ambient:
         data = [{'created': date_time, 'd1': download_mbps, 'd2': upload_mbps, 'd3': ping}]
@@ -106,21 +117,19 @@ def print_speed():
         if res.status_code != requests.codes.ok:
             print('ERROR:', res.status_code, file=sys.stderr, flush=True)
 
-def repeat_speed_test():
+def repeat_speed_test(server):
     count = 0
     while True:
-        print_speed()
+        print_speed(server)
         if args.num:
             count += 1
             if count >= args.num:
                 return
         time.sleep(args.sec)
 
-if args.header:
-    print('{0:} {1:9} {2:14} {3:14} {4:9} {5:9} {6:4} {7:9}  {8}'.format(
-        'Date       Time    ', '  Ping', '  Download', '  Upload', ' Download', '  Upload', ' Loss', '  Jitter', 'Server name'), flush=True)
-
 try:
-    repeat_speed_test()
+    main()
 except KeyboardInterrupt:
     print('Interrupted.', file=sys.stderr)
+except (BrokenPipeError, IOError):
+    sys.exit()
