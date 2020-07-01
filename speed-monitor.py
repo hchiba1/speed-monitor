@@ -64,14 +64,10 @@ def print_speed(server):
     ret = subprocess.run(date_command, stdout=subprocess.PIPE)
     date_time = ret.stdout.decode().rstrip('\n')
 
-    try:
-        ret = subprocess.run(command, stdout=subprocess.PIPE)
-        if ret.returncode != 0:
-            print(f'ERROR: speedtest server={server} retcode={ret.returncode}')
-            sys.exit(ret.returncode)
-    except Exception as e:
-        print('Exception:', e)
-        return
+    ret = subprocess.run(command, stdout=subprocess.PIPE)
+    if ret.returncode != 0:
+        print(f'ERROR: speedtest server={server} retcode={ret.returncode}')
+        sys.exit(ret.returncode)
     # line = ret.stdout.decode()
     # line = line.rstrip('\n')
     # fields = line.split('\t')
