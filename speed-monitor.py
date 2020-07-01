@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import re
+import json
 import time
 import argparse
 import subprocess
@@ -19,7 +20,8 @@ args = parser.parse_args()
 command = [
     'speedtest',
     '-s', args.server,
-    '-f', 'tsv'
+    # '-f', 'tsv'
+    '-f', 'json'
 ]
 
 date_command = ['date', '+%F %T']
@@ -33,7 +35,7 @@ def print_servers():
         settings = ET.fromstring(res.text)
         for servers in settings:
             for server in servers:
-                print(f'{server.attrib["id"]:>5} ({server.attrib["lat"]},{server.attrib["lon"]}) {server.attrib["name"]} ({server.attrib["country"]}) {server.attrib["sponsor"]}')
+                print(f'{server.attrib["id"]}\t({server.attrib["lat"]},{server.attrib["lon"]})\t{server.attrib["name"]} ({server.attrib["country"]}) {server.attrib["sponsor"]}')
 
 if args.list:
     try:
@@ -51,21 +53,38 @@ if args.ambient:
     channel, key = matched.groups()
 
 def print_speed():
-    ret = subprocess.run(command, stdout=subprocess.PIPE)
-    if ret.returncode != 0:
-        sys.exit(ret.returncode)
-    line = ret.stdout.decode()
-    line = line.rstrip('\n')
-
-    fields = line.split('\t')
-    if len(fields) != 10:
-        print('ERROR:', line, file=sys.stderr)
-        return
-
     ret = subprocess.run(date_command, stdout=subprocess.PIPE)
     date_time = ret.stdout.decode().rstrip('\n')
 
-    server_name, server_id, latency, jitter, packet_loss, download, upload, download_bytes, upload_bytes, share_url = fields
+    try:
+        ret = subprocess.run(command, stdout=subprocess.PIPE)
+        if ret.returncode != 0:
+            print(f'ERROR: server={args.server} code={ret.returncode}')
+            sys.exit(ret.returncode)
+    except Exception as e:
+        print(e)
+        return
+    # line = ret.stdout.decode()
+    # line = line.rstrip('\n')
+    # fields = line.split('\t')
+    # if len(fields) != 10:
+    #     print('ERROR:', line, file=sys.stderr)
+    #     return
+    # server_name, server_id, latency, jitter, packet_loss, download, upload, download_bytes, upload_bytes, share_url = fields
+    out = ret.stdout.decode()
+    jsonData = json.loads(out)
+    server_name = jsonData['server']['name']
+    server_location = jsonData['server']['location']
+    server_country = jsonData['server']['country']
+    server_id = jsonData['server']['id']
+    latency = jsonData['ping']['latency']
+    jitter = jsonData['ping']['jitter']
+    packet_loss= jsonData.get('packetLoss', 'N/A')
+    download = jsonData['download']['bandwidth']
+    download_bytes = jsonData['download']['bytes']
+    upload = jsonData['upload']['bandwidth']
+    upload_bytes = jsonData['upload']['bytes']
+
     ping = f'{float(latency):.2f}'
     download_mbps = int(download) * 8 / 1000000
     upload_mbps = int(upload) * 8 / 1000000
@@ -78,7 +97,8 @@ def print_speed():
     print(f'{date_time} {ping:>6} ms',
           f'{download_mbps:>7.2f} Mbit/s {upload_mbps:>7.2f} Mbit/s',
           f'{download_mb:>6.1f} MB {upload_mb:>6.1f} MB',
-          f'{packet_loss} {float(jitter):>6.2f} ms  {server_name}', flush=True)
+          # f'{packet_loss} {float(jitter):>6.2f} ms  {server_name}', flush=True)
+          f'{packet_loss} {float(jitter):>6.2f} ms  {server_id:5} {server_location} ({server_country}) {server_name}', flush=True)
 
     if args.ambient:
         data = [{'created': date_time, 'd1': download_mbps, 'd2': upload_mbps, 'd3': ping}]
