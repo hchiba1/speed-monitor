@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import sys
+import io
 import re
 import json
 import time
@@ -7,6 +8,16 @@ import argparse
 import subprocess
 import requests
 import xml.etree.ElementTree as ET
+
+def unbuffered_text_io(stream):
+    if (not isinstance(stream, io.TextIOWrapper) or not hasattr(stream, 'buffer')):
+        return stream
+    raw = stream.buffer
+    if isinstance(raw, io.BufferedIOBase) and hasattr(raw, 'raw'):
+        raw = raw.raw
+    return io.TextIOWrapper(raw, encoding=stream.encoding, errors=stream.errors, write_through=True)
+sys.stdout = unbuffered_text_io(sys.stdout)
+sys.stderr = unbuffered_text_io(sys.stderr)
 
 parser = argparse.ArgumentParser(description='Repeat the Speedtest by Ookla')
 parser.add_argument('-H', '--header', action='store_true', help='output header line')
@@ -127,5 +138,5 @@ try:
     main()
 except KeyboardInterrupt:
     print('Interrupted.', file=sys.stderr)
-except (BrokenPipeError, IOError):
-    sys.exit()
+except BrokenPipeError:
+    pass
