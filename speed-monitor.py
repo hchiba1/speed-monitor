@@ -23,17 +23,10 @@ parser = argparse.ArgumentParser(description='Repeat the Speedtest by Ookla')
 parser.add_argument('-H', '--header', action='store_true', help='output header line')
 parser.add_argument('-n', '--num', default=0, type=int, help='limits the number of mesurements')
 parser.add_argument('-t', '--sec', default=3600, type=int, help='sleep between tests (in seconds)')
-parser.add_argument('-s', '--server', default='15047', help='server ID')
+parser.add_argument('-s', '--server', nargs='+', default=[15047], help='server ID')
 parser.add_argument('--ambient', help='channel and key for Ambient')
 parser.add_argument('-l', '--list', action='store_true', help='list servers')
 args = parser.parse_args()
-
-command = [
-    'speedtest',
-    '-s', args.server,
-    # '-f', 'tsv'
-    '-f', 'json'
-]
 
 date_command = ['date', '+%F %T']
 
@@ -75,6 +68,7 @@ def print_speed(server):
     ret = subprocess.run(date_command, stdout=subprocess.PIPE)
     date_time = ret.stdout.decode().rstrip('\n')
 
+    command = [ 'speedtest', '-s', str(server), '-f', 'json' ]
     ret = subprocess.run(command, stdout=subprocess.PIPE)
     if ret.returncode != 0:
         print(f'ERROR: speedtest server={server} retcode={ret.returncode}')
@@ -124,10 +118,11 @@ def print_speed(server):
         if res.status_code != requests.codes.ok:
             print('ERROR:', res.status_code, file=sys.stderr, flush=True)
 
-def repeat_speed_test(server):
+def repeat_speed_test(servers):
     count = 0
     while True:
-        print_speed(server)
+        for server in servers:
+            print_speed(server)
         if args.num:
             count += 1
             if count >= args.num:
@@ -137,6 +132,6 @@ def repeat_speed_test(server):
 try:
     main()
 except KeyboardInterrupt:
-    print('Interrupted.', file=sys.stderr)
+    print('', file=sys.stderr)
 except BrokenPipeError:
     pass
