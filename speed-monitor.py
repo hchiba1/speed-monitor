@@ -69,9 +69,9 @@ def print_speed(server):
     date_time = ret.stdout.decode().rstrip('\n')
 
     command = [ 'speedtest', '-s', str(server), '-f', 'json' ]
-    ret = subprocess.run(command, stdout=subprocess.PIPE)
+    ret = subprocess.run(command, stdout=subprocess.PIPE, timeout=300)
     if ret.returncode != 0:
-        print(f'ERROR: speedtest server={server} retcode={ret.returncode}')
+        print(f'ERROR: speedtest server={server} retcode={ret.returncode}', flush=True)
         sys.exit(ret.returncode)
     # line = ret.stdout.decode()
     # line = line.rstrip('\n')
@@ -122,7 +122,11 @@ def repeat_speed_test(servers):
     count = 0
     while True:
         for server in servers:
-            print_speed(server)
+            try:
+                print_speed(server)
+            except Exception as e:
+                print(f'ERROR: speedtest server={server}', flush=True)
+                print(e, file=sys.stderr, flush=True)
         if args.num:
             count += 1
             if count >= args.num:
