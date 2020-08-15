@@ -122,7 +122,7 @@ def repeat_speed_test(servers, channel, key):
     while True:
         for server in servers:
             try:
-                print_speed(server)
+                print_speed(server, channel, key)
             except Exception as e:
                 print(f'ERROR: speedtest server={server}', flush=True)
                 print(e, file=sys.stderr, flush=True)
