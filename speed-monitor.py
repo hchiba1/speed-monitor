@@ -30,9 +30,8 @@ args = parser.parse_args()
 
 date_command = ['date', '+%F %T']
 
-channel, key = '', ''
-
 def main():
+    channel, key = '', ''
     if args.ambient:
         matched = re.search(r'^(\d+):([0-9a-z]+)$', args.ambient)
         if not matched:
@@ -48,7 +47,7 @@ def main():
         print('{0:} {1:9} {2:14} {3:14} {4:9} {5:9} {6:4} {7:9} {8}'.format(
             'Date       Time    ', '  Ping', '  Download', '  Upload', ' Download', '  Upload', ' Loss', '  Jitter', 'Server'), flush=True)
 
-    repeat_speed_test(args.server)
+    repeat_speed_test(args.server, channel, key)
 
 def print_servers():
     res = requests.get('http://c.speedtest.net/speedtest-servers-static.php')
@@ -64,7 +63,7 @@ def print_servers():
                       f'{server.attrib["country"]} ({server.attrib["name"]}) {server.attrib["sponsor"]}',
                       sep=' ')
 
-def print_speed(server):
+def print_speed(server, channel, key):
     ret = subprocess.run(date_command, stdout=subprocess.PIPE)
     date_time = ret.stdout.decode().rstrip('\n')
 
@@ -114,15 +113,15 @@ def print_speed(server):
 
     if args.ambient:
         data = [{'created': date_time, 'd1': download_mbps, 'd2': upload_mbps, 'd3': ping}]
-        res = requests.post(f'http://ambidata.io/api/v2/channels/{channel}/dataarray', json={'writeKey': key, 'data': data})
+        res = requests.post(f'https://ambidata.io/api/v2/channels/{channel}/dataarray', json={'writeKey': key, 'data': data})
         if res.status_code != requests.codes.ok:
             print('ERROR:', res.status_code, file=sys.stderr, flush=True)
 
-def repeat_speed_test(servers):
+def repeat_speed_test(servers, channel, key):
     count = 0
     while True:
         for server in servers:
-            print_speed(server)
+            print_speed(server, channel, key)
         if args.num:
             count += 1
             if count >= args.num:
