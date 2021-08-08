@@ -13,7 +13,7 @@ Default server is OPEN Project (via 20G SINET) (Tokyo, Japan) (ID:15047)
 ```
 ### 3 times with no interval, output with header
 ```
-./speed-monitor.py -n 3 -t 0 --header
+./speed-monitor.py -n 3 -t 0 -H
 ```
 ### List available servers
 ```
