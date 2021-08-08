@@ -33,10 +33,16 @@ date_command = ['date', '+%F %T']
 
 def main():
     channel, key = '', ''
-    if args.ambient or args.ambient2:
+    if args.ambient:
         matched = re.search(r'^(\d+):([0-9a-z]+)$', args.ambient)
         if not matched:
             print('ERROR: invalid value in --ambient')
+            sys.exit(1)
+        channel, key = matched.groups()
+    if args.ambient2:
+        matched = re.search(r'^(\d+):([0-9a-z]+)$', args.ambient2)
+        if not matched:
+            print('ERROR: invalid value in --ambient2')
             sys.exit(1)
         channel, key = matched.groups()
 
