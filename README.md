@@ -4,14 +4,13 @@ A wrapper script of **Speedtest CLI** by Ookla (https://www.speedtest.net/apps/c
 Repeat the `speedtest` command with a specified interval.
 
 ## Usage
-### Use in default settings
 Default interval is 3600 sec (1 hour)
 
 Default server is OPEN Project (via 20G SINET) (Tokyo, Japan) (ID:15047)
 ```
 ./speed-monitor.py
 ```
-### 3 times with no interval, output with header
+### 3 times, 0 sec interval, with header
 ```
 ./speed-monitor.py -n 3 -t 0 -H
 ```
