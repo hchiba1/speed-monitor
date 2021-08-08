@@ -25,6 +25,7 @@ parser.add_argument('-n', '--num', default=0, type=int, help='limits the number 
 parser.add_argument('-t', '--sec', default=3600, type=int, help='sleep between tests (in seconds)')
 parser.add_argument('-s', '--server', nargs='+', default=[15047], help='server ID')
 parser.add_argument('--ambient', help='channel and key for Ambient')
+parser.add_argument('--ambient2', help='channel and key for Ambient')
 parser.add_argument('-l', '--list', action='store_true', help='list servers')
 args = parser.parse_args()
 
@@ -32,7 +33,7 @@ date_command = ['date', '+%F %T']
 
 def main():
     channel, key = '', ''
-    if args.ambient:
+    if args.ambient or ambient2:
         matched = re.search(r'^(\d+):([0-9a-z]+)$', args.ambient)
         if not matched:
             print('ERROR: invalid value in --ambient')
@@ -111,8 +112,11 @@ def print_speed(server, channel, key):
           f'{server_name}',
           flush=True)
 
-    if args.ambient:
-        data = [{'created': date_time, 'd1': download_mbps, 'd2': upload_mbps, 'd3': ping}]
+    if args.ambient or args.ambient2:
+        if args.ambient:
+            data = [{'created': date_time, 'd1': download_mbps, 'd2': upload_mbps, 'd3': ping}]
+        else:
+            data = [{'created': date_time, 'd5': download_mbps, 'd6': upload_mbps, 'd7': ping}]
         res = requests.post(f'https://ambidata.io/api/v2/channels/{channel}/dataarray', json={'writeKey': key, 'data': data})
         if res.status_code != requests.codes.ok:
             print('ERROR:', res.status_code, file=sys.stderr, flush=True)
