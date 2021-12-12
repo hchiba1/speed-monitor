@@ -111,9 +111,8 @@ def print_speed(server, channel, key):
         packet_loss = f'{float(packet_loss):>4.1f}%'
     print(f'{date_time} {ping:>6} ms',
           f'{download_mbps:>7.2f} Mbit/s {upload_mbps:>7.2f} Mbit/s',
-          f'{download_mb:>6.1f} MB {upload_mb:>6.1f} MB',
+          f'{download_mb:>7.1f} MB {upload_mb:>7.1f} MB',
           f'{packet_loss} {float(jitter):>6.2f} ms',
-          # f'{server_id:5} {server_location} ({server_country})',
           f'{server_id:5} {server_country} ({server_location})',
           f'{server_name}',
           flush=True)
