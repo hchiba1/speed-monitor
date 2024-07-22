@@ -23,7 +23,7 @@ parser = argparse.ArgumentParser(description='Repeat the Speedtest by Ookla')
 parser.add_argument('-H', '--header', action='store_true', help='output header line')
 parser.add_argument('-n', '--num', default=0, type=int, help='limits the number of mesurements')
 parser.add_argument('-t', '--sec', default=3600, type=int, help='sleep between tests (in seconds)')
-parser.add_argument('-s', '--server', nargs='+', default=[48463], help='server ID')
+parser.add_argument('-s', '--server', nargs='+', default=[48463,14623,21569], help='server ID')
 parser.add_argument('--ambient', help='channel and key for Ambient')
 parser.add_argument('-l', '--list', action='store_true', help='list servers')
 args = parser.parse_args()
@@ -71,7 +71,7 @@ def print_speed(server, channel, key):
     ret = subprocess.run(command, stdout=subprocess.PIPE, timeout=300)
     if ret.returncode != 0:
         print(f'ERROR: speedtest server={server} retcode={ret.returncode}', flush=True)
-        sys.exit(ret.returncode)
+        return
     # line = ret.stdout.decode()
     # line = line.rstrip('\n')
     # fields = line.split('\t')
@@ -122,6 +122,7 @@ def repeat_speed_test(servers, channel, key):
         for server in servers:
             try:
                 print_speed(server, channel, key)
+                break
             except Exception as e:
                 print(f'ERROR: speedtest server={server}', flush=True)
                 print(e, file=sys.stderr, flush=True)
