@@ -70,7 +70,7 @@ def print_speed(server, channel, key):
     command = [ 'speedtest', '-s', str(server), '-f', 'json' ]
     ret = subprocess.run(command, stdout=subprocess.PIPE, timeout=300)
     if ret.returncode != 0:
-        print(f'ERROR: speedtest server={server} retcode={ret.returncode}', flush=True)
+        print(f'ERROR: speedtest server={server} retcode={ret.returncode}', file=sys.stderr, flush=True)
         return
     # line = ret.stdout.decode()
     # line = line.rstrip('\n')
@@ -124,7 +124,6 @@ def repeat_speed_test(servers, channel, key):
                 print_speed(server, channel, key)
                 break
             except Exception as e:
-                print(f'ERROR: speedtest server={server}', flush=True)
                 print(e, file=sys.stderr, flush=True)
         if args.num:
             count += 1
