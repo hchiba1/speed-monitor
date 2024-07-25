@@ -7,10 +7,6 @@ Repeat the `speedtest` command with a specified interval.
 ```
 ./speed-monitor.py
 ```
-* Default interval is 3600 sec (1 hour)
-
-* Default server is OPEN Project (via 20G SINET) (Tokyo, Japan) (ID:15047)
-
 ### 3 times, 0 sec interval, with header
 ```
 ./speed-monitor.py -n 3 -t 0 -H
